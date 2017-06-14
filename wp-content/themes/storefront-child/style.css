@@ -1,0 +1,148 @@
+/*
+Theme Name: Storefront Child
+Description: Child theme for Storefront theme
+Author: Malcolm Walters
+Author URI:
+Template: storefront
+Version: 1.0
+Text Domain: storefront-child
+*/
+
+/**
+ * Header
+ */
+.site-header {
+  background-color: #2c2d33;
+  padding-top: 1.618em;
+  color: #9aa0a7;
+  background-position: center center;
+  position: relative;
+  z-index: 999; }
+  .site-header .site-logo-anchor {
+    display: block; }
+    .site-header .site-logo-anchor img {
+      max-height: 2.618em;
+      width: auto; }
+  .site-header .site-branding, .site-header .site-logo-anchor {
+    margin-bottom: 0.618em; }
+  .site-header .widget {
+    margin-bottom: 0; }
+  .site-branding {
+	width: 50%;
+	margin-right: 1%;
+	}
+/**
+* Added width to stop title and shop description wrapping
+*/
+.site-header .site-branding, .site-header .site-logo-anchor, .site-header .site-logo-link {
+    display: block;
+    width: 35%;
+    float: left;
+    margin-right: 4.347826087%;
+    clear: both;
+}
+
+	
+/**
+ * This controls the width of the written area of the web site
+ */
+.col-full {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 75.141em;
+}
+
+.home.blog .site-header, .home.page:not(.page-template-template-homepage) .site-header, .home.post-type-archive-product .site-header {
+    margin-bottom: 1.236em;
+}
+
+/* This is controls the margin on the description part of a single item
+Mal 19/08/2015*/
+div[itemprop="description"] p {
+	margin: 1px;
+}
+
+/* This is to disable the Select Options button when looking at categories and sub categories
+Mal 19/08/2015*/
+.woocommerce .products .product_type_variable {
+	display:none;
+}
+
+/* Styling for Minimum Cut of Fabric notice
+Mal 15/09/2015*/
+div[itemprop="minimum_cut"] {
+	border: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	background: #EEEEEE;
+}
+
+/* Styling for Minimum Cut of Fabric notice
+Mal 15/09/2015*/
+div[itemprop="price_calc"] {
+	float: left;
+	border: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	background: #EEEEEE;
+}
+
+/* Styling for Breadcrumb padding
+Mal 15/09/2015*/
+
+.woocommerce-breadcrumb {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.857em;
+    margin-bottom: 1.75em;
+    padding: .5em 0;
+}
+
+/*Styling for padding at the top of the footer widgets
+Mal 15/10/2015 */
+.footer-widgets {
+    border-bottom: 3px solid rgba(0, 0, 0, 0.05);
+    padding-top: 1.236em;
+}
+
+/*Styling for Woocommerce Memberships
+Mal 2016-02-17 */
+woocommerce span.onsale.wc-memberships-member-discount{
+	border-color: #FE610B;
+	color: #FE61OB;
+}
+
+/*
+Hide options on Side Menu
+Uses category numbers to hide options from the secondary nav menu.
+*/
+/* by Colour*/
+.widget_product_categories .cat-item-465 {display:none}
+/* Gift Wrapping Options*/
+.widget_product_categories .cat-item-834 {display:none}
+
+
+/*
+Hide By Theme category
+*/
+.widget_product_categories .cat-item-501 {display:none}
+
+.custom-logo-link, .site-branding, .site-header-cart, .site-logo-anchor, .site-logo-link, .site-search {
+    margin-bottom: .0em;
+    }
+    
+.onsale {
+    border-color: #ff5808;
+    color: #ff5808;
+    font-size: 20pt;
+}
+
+.woocommerce ul.products li.product,
+.woocommerce-page ul.products li.product {
+    float: none;
+    display: inline-block;
+    vertical-align: top;
+}
