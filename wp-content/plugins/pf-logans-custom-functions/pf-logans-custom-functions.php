@@ -3,13 +3,21 @@
 Plugin Name: Logans Custom Functions
 Plugin URL: 
 Description: Custom functions for Logan's Patchwork Fabrics. Curently included are: Custom order status; Disabling the Product Review Tab; Widgetise the sidebar
-Version: 0.45
+Version: 0.5
 Author: Malcolm Walters
 Author URI:  
 */
 
 	defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/* Call update checker for Github hosted version
+*/
+require_once( 'pf-logans-custom-functions-github-update-checker.php' );
+if ( is_admin() ) {
+    new LCFGitHubPluginUpdater( __FILE__, 'MalWalters', "patchworkfabrics" );
+}
+
+	
 /*
 * Create Logans Admin Menu
 * This will be for all custom settings for Logan's Patchwork Fabrics
@@ -33,7 +41,6 @@ function logans_custom_plugin_options() {
 </h2>
 <?php
 }
-
 
 
 /***************************************************
