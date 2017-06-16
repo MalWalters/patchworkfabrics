@@ -101,6 +101,7 @@ wp-content/themes/storefront/
 # Add custom plugins to the following list
 wp-content/plugins/*
 !wp-content/plugins/pf-logans-custom-functions/
+!wp-content/plugins/pf-logans-club-membership/
 
 # ignore node/grunt dependency directories
 node_modules/
