@@ -3,7 +3,7 @@
 Plugin Name: Logans Club Membership
 Plugin URL: 
 Description: Logan's Club Membership. This creates a custom user role 'Logans Club Member'; custom fields on the user admin screen and settings options for category discounts
-Version: 0.1
+Version: 0.3
 Author: Malcolm Walters
 Author URI:  
 */
@@ -18,14 +18,10 @@ Author URI:
     register_activation_hook( __FILE__, 'add_logans_club_member_role_on_plugin_activation' );
 	
 	// Remove custom user role when plugin is desactivated
-	function remove_logans_club_member_custom_roes_on_plugin_adctivation(){
+	function remove_logans_club_member_custom_roes_on_plugin_deactivation(){
 			remove_role('logans_club_member_role');
 	}
 		
-	register_deactivation_hook( __FILE__, 'remove_logans_club_member_custom_roes_on_plugin_adctivation' );
-	
-	
-	
-	
-	
+	register_deactivation_hook( __FILE__, 'remove_logans_club_member_custom_roes_on_plugin_deactivation' );
+		
 ?>
