@@ -3,22 +3,24 @@
 Plugin Name: Logans Custom Functions
 Plugin URL: 
 Description: Custom functions for Logan's Patchwork Fabrics. Curently included are: Custom order status; Disabling the Product Review Tab; Widgetise the sidebar
-Version: 0.5
+Version: 0.6
 Author: Malcolm Walters
 Author URI:  
 */
 
 	defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-/* Call update checker for Github hosted version
-*/
-require_once( 'pf-logans-custom-functions-github-update-checker.php' );
-if ( is_admin() ) {
-    new LCFGitHubPluginUpdater( __FILE__, 'MalWalters', "patchworkfabrics" );
-}
-
-	
 /*
+Remove Title from front page
+*/
+	
+add_filter( 'woocommerce_show_page_title' , 'woo_hide_page_title' );
+
+function woo_hide_page_title() {
+	return false;
+}	
+	
+/************************************************************************************************************************************************************
 * Create Logans Admin Menu
 * This will be for all custom settings for Logan's Patchwork Fabrics
 */
@@ -26,21 +28,109 @@ if ( is_admin() ) {
 add_action( 'admin_menu', 'logans_custom_menu_settings' );
 
 function logans_custom_menu_settings() {
-	add_options_page( 'Logans Custom Settings', 'Logans Settings', 'manage_options', 'my-unique-identifier', 'logans_custom_plugin_options' );
+	add_options_page( 'Logans Custom Settings', 'Logans Settings', 'manage_options', 'logans-custom-settings', 'logans_custom_plugin_options' );
+
 }
 
-function logans_custom_plugin_options() {
-	if ( !current_user_can( 'manage_options' ) )  {
-		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-	}
+function logans_custom_plugin_options(){
+	
+	if( isset( $_GET[ 'tab' ] ) ) {
+    $active_tab = $_GET[ 'tab' ];
+    }else{
+    $active_tab = "minimum-cut";}    // end if
 ?>
 <h1> Custom Settings for Logan's Patchwork Fabrics</h1>
 <h2 class="nav-tab-wrapper">
-    <a href="#" class="nav-tab">Minimum Cut Notice</a>
-    <a href="#" class="nav-tab">Next</a>
+    <a href="?page=logans-custom-settings&tab=minimum-cut" class="nav-tab <?php echo $active_tab == 'minimum-cut' ? 'nav-tab-active' : ''; ?>">Minimum Cut Notice</a>
+    <a href="?page=logans-custom-settings&tab=member-discounts" class="nav-tab <?php echo $active_tab == 'member-discounts' ? 'nav-tab-active' : ''; ?>">Club Membership Discounts</a>
 </h2>
+<form method="post">
 <?php
+if ($active_tab == "minimum-cut"){
+     ?>
+     <div class="logans-custom-settings">
+     <h2>Minimum Cut Notice</h2>
+     <input type="hidden" name="mfc_hidden" value="Y">
+		<?php echo "This is the text that will be shown to the customer when purchasing fabric by the metre."; ?>
+
+		<?php
+		if($_POST['mfc_hidden'] == 'Y'){
+				//Form Data sent
+				$current_label = $_POST['mfc_label'];
+				update_option('mfc_label', $current_label);
+				?>
+				<div class="updated"><p><strong>Options Saved</strong></p></div>
+				<?php
+			} else {
+				// Normal page display
+				$current_label = get_option('mfc_label');
+			}
+		?>
+	<form name="mfc_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
+		<input type="hidden" name="mfc_hidden" value="Y">
+		<?php echo "<h4>Current Label</h4>"; ?>
+		<p><input type="text" name="mfc_label" value="<?php echo $current_label; ?>" size='60'></p>
+		<p class="submit">
+		<input type="submit" name="Submit" value="Update" />
+		</p>
+	</form>
+		
+     </div>
+     <?php
+    }else{
+		if (is_plugin_inactive("pf-logans-club-membership/pf-logans-club-membership.php")){
+			echo "<h3>To access these settings please, activate the Logans Club Membership plugin in the Plugins page</h3>";
+		}else{
+	?>
+	<div class="logans-custom-settings">
+     <h2>Club Members Discount</h2>
+	 <div class="container logansClubDiscountValues">
+		 <div class = "row">
+			<p>Fabric by the metre: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Fabric" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Panels: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Panels" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Fabric Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Fabric-packs" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Project Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Project-packs" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Patterns: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Patterns" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Quilt Kits: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Quilt-kits" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Books Discount: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Books" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Haberdashery Discount: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Haberdashery" value="0" style="text-align:right">%</p>
+		 </div>
+		 <div class = "row">
+			<p>Software: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Software" value="0" style="text-align:right">%</p>
+		 </div>
+		 <p class="submit">
+		<input type="submit" name="Submit" value="Update" />
+		</p>
+	 </div>
+	<?php
+	}
+	}
+	
 }
+
+
+/****************************************************
+* Remove Comments from the admin menu
+* The website should not allow comments on posts or product reviews
+*/
+function custom_menu_page_removing() {
+    remove_menu_page( 'edit-comments.php' );
+}
+add_action( 'admin_menu', 'custom_menu_page_removing' );
 
 
 /***************************************************
@@ -113,10 +203,6 @@ function wcs_woo_remove_reviews_tab($tabs) {
  return $tabs;
 }
 
-/*************************************************
-* Register widgetised area in the header
-*/
-register_sidebar( array( 'name' => __( 'Header Widget', 'woothemes' ), 'id' => 'header-widget', 'description' => __( 'The default header widget area for your theme.', 'woothemes' ), 'before_widget' => '<div id="%1$s" class="widget %2$s">', 'after_widget' => '</div>', 'before_title' => '<h3>', 'after_title' => '</h3>' ) );
 
 //OneAll SOCIAL MEDIA PLUGIN
 //Handle data retrieved from a social network profile

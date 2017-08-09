@@ -13,6 +13,7 @@ Author URI:
 	// Create custom user role when plugin is activated
 	function add_logans_club_member_role_on_plugin_activation() {
        add_role( 'logans_club_member_role', 'Logans Club Member', array( 'read' => true, 'level_0' => true ) );
+	   //Check to see if the discounts are active
 	}
 	
     register_activation_hook( __FILE__, 'add_logans_club_member_role_on_plugin_activation' );
