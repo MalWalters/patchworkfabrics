@@ -35,90 +35,90 @@ function logans_custom_menu_settings() {
 function logans_custom_plugin_options(){
 	
 	if( isset( $_GET[ 'tab' ] ) ) {
-    $active_tab = $_GET[ 'tab' ];
+		$active_tab = $_GET[ 'tab' ];
     }else{
-    $active_tab = "minimum-cut";}    // end if
-?>
-<h1> Custom Settings for Logan's Patchwork Fabrics</h1>
-<h2 class="nav-tab-wrapper">
-    <a href="?page=logans-custom-settings&tab=minimum-cut" class="nav-tab <?php echo $active_tab == 'minimum-cut' ? 'nav-tab-active' : ''; ?>">Minimum Cut Notice</a>
-    <a href="?page=logans-custom-settings&tab=member-discounts" class="nav-tab <?php echo $active_tab == 'member-discounts' ? 'nav-tab-active' : ''; ?>">Club Membership Discounts</a>
-</h2>
-<form method="post">
-<?php
-if ($active_tab == "minimum-cut"){
-     ?>
-     <div class="logans-custom-settings">
-     <h2>Minimum Cut Notice</h2>
-     <input type="hidden" name="mfc_hidden" value="Y">
-		<?php echo "This is the text that will be shown to the customer when purchasing fabric by the metre."; ?>
-
-		<?php
-		if($_POST['mfc_hidden'] == 'Y'){
-				//Form Data sent
-				$current_label = $_POST['mfc_label'];
-				update_option('mfc_label', $current_label);
-				?>
-				<div class="updated"><p><strong>Options Saved</strong></p></div>
-				<?php
-			} else {
-				// Normal page display
-				$current_label = get_option('mfc_label');
-			}
-		?>
-	<form name="mfc_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
-		<input type="hidden" name="mfc_hidden" value="Y">
-		<?php echo "<h4>Current Label</h4>"; ?>
-		<p><input type="text" name="mfc_label" value="<?php echo $current_label; ?>" size='60'></p>
-		<p class="submit">
-		<input type="submit" name="Submit" value="Update" />
-		</p>
-	</form>
-		
-     </div>
-     <?php
-    }else{
-		if (is_plugin_inactive("pf-logans-club-membership/pf-logans-club-membership.php")){
-			echo "<h3>To access these settings please, activate the Logans Club Membership plugin in the Plugins page</h3>";
-		}else{
+		$active_tab = "minimum-cut";}    // end if
 	?>
-	<div class="logans-custom-settings">
-     <h2>Club Members Discount</h2>
-	 <div class="container logansClubDiscountValues">
-		 <div class = "row">
-			<p>Fabric by the metre: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Fabric" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Panels: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Panels" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Fabric Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Fabric-packs" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Project Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Project-packs" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Patterns: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Patterns" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Quilt Kits: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Quilt-kits" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Books Discount: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Books" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Haberdashery Discount: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Haberdashery" value="0" style="text-align:right">%</p>
-		 </div>
-		 <div class = "row">
-			<p>Software: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Software" value="0" style="text-align:right">%</p>
-		 </div>
-		 <p class="submit">
-		<input type="submit" name="Submit" value="Update" />
-		</p>
-	 </div>
+	<h1> Custom Settings for Logan's Patchwork Fabrics</h1>
+	<h2 class="nav-tab-wrapper">
+		<a href="?page=logans-custom-settings&tab=minimum-cut" class="nav-tab <?php echo $active_tab == 'minimum-cut' ? 'nav-tab-active' : ''; ?>">Minimum Cut Notice</a>
+		<a href="?page=logans-custom-settings&tab=member-discounts" class="nav-tab <?php echo $active_tab == 'member-discounts' ? 'nav-tab-active' : ''; ?>">Club Membership Discounts</a>
+	</h2>
+	<form method="post">
 	<?php
-	}
-	}
+	if ($active_tab == "minimum-cut"){
+		 ?>
+		 <div class="logans-custom-settings">
+		 <h2>Minimum Cut Notice</h2>
+		 <input type="hidden" name="mfc_hidden" value="Y">
+			<?php echo "This is the text that will be shown to the customer when purchasing fabric by the metre."; ?>
+
+			<?php
+			if($_POST['mfc_hidden'] == 'Y'){
+					//Form Data sent
+					$current_label = $_POST['mfc_label'];
+					update_option('mfc_label', $current_label);
+					?>
+					<div class="updated"><p><strong>Options Saved</strong></p></div>
+					<?php
+				} else {
+					// Normal page display
+					$current_label = get_option('mfc_label');
+				}
+			?>
+		<form name="mfc_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
+			<input type="hidden" name="mfc_hidden" value="Y">
+			<?php echo "<h4>Current Label</h4>"; ?>
+			<p><input type="text" name="mfc_label" value="<?php echo $current_label; ?>" size='60'></p>
+			<p class="submit">
+			<input type="submit" name="Submit" value="Update" />
+			</p>
+		</form>
+			
+		 </div>
+		 <?php
+		}else{
+			if (is_plugin_inactive("pf-logans-club-membership/pf-logans-club-membership.php")){
+				echo "<h3>To access these settings please, activate the Logans Club Membership plugin in the Plugins page</h3>";
+			}else{
+		?>
+		<div class="logans-custom-settings">
+		 <h2>Club Members Discount</h2>
+		 <div class="container logansClubDiscountValues">
+			 <div class = "row">
+				<p>Fabric by the metre: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Fabric" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Panels: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Panels" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Fabric Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Fabric-packs" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Project Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Project-packs" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Patterns: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Patterns" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Quilt Kits: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Quilt-kits" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Books Discount: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Books" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Haberdashery Discount: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Haberdashery" value="0" style="text-align:right">%</p>
+			 </div>
+			 <div class = "row">
+				<p>Software: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount-Software" value="0" style="text-align:right">%</p>
+			 </div>
+			 <p class="submit">
+			<input type="submit" name="Submit" value="Update" />
+			</p>
+		 </div>
+		<?php
+		}
+		}
 	
 }
 
