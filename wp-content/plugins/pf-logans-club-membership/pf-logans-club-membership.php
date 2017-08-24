@@ -24,22 +24,187 @@ Author URI:
 	}
 		
 	register_deactivation_hook( __FILE__, 'remove_logans_club_member_custom_roes_on_plugin_deactivation' );
+
+/**
+ *Add tab to My Account page
+ */
+
+/**
+ * Account menu items
+ *
+ * @param arr $items
+ * @return arr
+ */
+ 
+function logans_account_menu_items( $items ) {
+    $items['logans-club'] = __( 'Logans Club', 'logans-club' );
+    return $items;
+}
+
+add_filter( 'woocommerce_account_menu_items', 'logans_account_menu_items', 10, 1 );
+
+/**
+ * Add endpoint
+ */
+ 
+function logans_add_my_account_endpoint() {
+    add_rewrite_endpoint( 'logans-club', EP_PAGES );
+}
+
+add_action( 'init', 'logans_add_my_account_endpoint' );
+
+/**
+ * Logan's Club Membership content
+ */
+ 
+function logans_information_endpoint_content() {
+    ?>
+	<h3>Logan's Patchwork Club Membership Information</h3>
+	<?php
+	$user_id = get_current_user_id();
+		$user = get_user_meta($user_id);
+		// if there's no metadata for this user
+		if (!$user){
+			echo "It looks like you're not a member. Click here to read about the Logan's Club!";
+			return;
+		}
 		
+		$logans_membership_info = get_user_meta( $user_id, 'logans-club-membership-info', false);
+		
+		$expiry_date = $logans_membership_info[0]['logans-membership-expiry-date'];
+		?>
+		<p>
+		Your Logan's Membership Number is: <br /><input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-number']) ?>" size='3'>
+		</p>
+		<p>
+		Your membership is due for renewal on: <br /><input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-expiry-date']) ?>" size='10'>
+		</p>
+		<p>
+		Your current membership status is: <i class="fa fa-times-circle fa-2x" style="color: red"></i><br /><br />
+		</p>
+		<?php
+}
 
-	add_action( 'show_user_profile', 'yoursite_extra_user_profile_fields' );
+add_action( 'woocommerce_account_logans-club_endpoint', 'logans_information_endpoint_content' );
 
-	add_action( 'edit_user_profile', 'yoursite_extra_user_profile_fields' );
+/*
+ * Change the order of the endpoints that appear in My Account Page - WooCommerce 2.6
+ * The first item in the array is the custom endpoint URL - ie http://mydomain.com/my-account/my-custom-endpoint
+ * Alongside it are the names of the list item Menu name that corresponds to the URL, change these to suit
+ */
+
+function logans_woo_my_account_order() {
+	$myorder = array(
+		'edit-account'       => __( 'Change My Details', 'woocommerce' ),
+		'dashboard'          => __( 'Dashboard', 'woocommerce' ),
+		'orders'             => __( 'Orders', 'woocommerce' ),
+		'downloads'          => __( 'Downloads', 'woocommerce' ),
+		'edit-address'       => __( 'Addresses', 'woocommerce' ),
+		'logans-club' 		 => __( 'Logans Club', 'woocommerce' ),
+		'customer-logout'    => __( 'Logout', 'woocommerce' ),
+	);
+
+	return $myorder;
+}
+add_filter ( 'woocommerce_account_menu_items', 'logans_woo_my_account_order' );
+
+/** Helper funtions
+- Compares expiry date in user_meta_data to today's date. If membership has expired this should return false.
+*/
+
+	function check_logans_club_membership_expiry($expiry_date){
+		echo $expiry_date;
+		/*
+		if ($expiry_date > $todays_date){
+			return false;
+		}
+		return true;
+		
+	*/
+		echo "Here";
+	}
+
+	
+	
+/* FOR USER LOGIN- Add fields to user profile page
+This adds the fields to the my accounts section of the website when the user is logged in
+*/
+	add_action( 'woocommerce_edit_account_form', 'logans_club_member_info_fields_profile' );
+	
+	function logans_club_member_info_fields_profile(){
+		
+		$user_id = get_current_user_id();
+		$user = get_user_meta($user_id);
+		// if there's no metadata for this user
+		if (!$user){
+			echo "<h3> Logan's Club Membership</h3>";
+			echo "It looks like you're not a member. Click here to read about the Logan's Club!";
+			return;
+		}
+		
+		$logans_membership_info = get_user_meta( $user_id, 'logans-club-membership-info', false);
+		
+		$expiry_date = $logans_membership_info[0]['logans-membership-expiry-date'];
+		?>
+		
+		<h3>Logan's Club Membership</h3>
+		<p>
+		Membership Number: <br /><input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-number']) ?>" size='3'> Membership Status:<br />
+		Membership Expiry Date: <br /><input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-expiry-date']) ?>" size='10'> <br />
+		</p>
+		<?php
+	}
+	
+	// Show fields when editing profile as admin
+	add_action( 'edit_user_profile', 'logans_club_member_info_fields' );
+	
+// 	Load Font Awesome icons for use in displaying membership status
+	add_action('wp_head','load_font_awesome_icons');
 
 
-	function yoursite_extra_user_profile_fields( $user ) {
+/* FOR ADMIN DASHBOARD - Adding fields to user profile as admin
+This adds the fields for Logans club membership that is viewed throught eh administration dashboard
+
+*/	
+	function logans_club_member_info_fields( $user ) {
+		
+		$logans_membership_info = get_user_meta( $user->ID, 'logans-club-membership-info', false);
+		$expiry_date = $logans_membership_info[0]['logans-membership-expiry-date'];
+		$date_now = new DateTime();
+		check_logans_club_membership_expiry($expiry_date);
+		var_dump ($date_now->format('Y-m-d'));
+		var_dump (date('Y-m-d',strtotime($expiry_date)));
+		if (date('Y-m-d',strtotime($expiry_date)) > date('Y-m-d',(strtotime($date_now->format('Y-m-d'))))){
+			echo "Expired";
+		}else{
+			echo "Valid";
+		}
 	?>
 	  <h3><?php _e("Logan's Club Membership", "blank"); ?></h3>
 	  <table class="form-table">
 		<tr>
-		  <th><label for="logans-club-membership-number"><?php _e("Club Membership Number"); ?></label></th>
+		  <th><label for="logans-club-membership-number"><?php _e("Club Membership Number : PQ"); ?></label></th>
 		  <td>
 			<input type="text" name="logans-club-membership-number" id="logans-club-membership-number" 
-				value="<?php echo esc_attr( get_the_author_meta( 'logans-club-membership-number', $user->ID ) ); ?>" size = "5"/> <i class="fa fa-thumbs-up fa-2x" style="color: green"></i><br />
+				value="<?php _e($logans_membership_info[0]['logans-membership-number']); ?>" size = "5"/> 
+				<?php 
+				// Compare expiry date to today's date and assign correct icons
+				$date_now - new DateTime();
+				$logans_membership_expiry_date = new DateTime($logans_membership_info[0]['logans-membership-expiry-date']);
+				
+				if ($date_now > $logans_membership_expiry_date) {
+					//Current membership
+				?>
+					<i class="fa fa-check fa-2x" style="color: green"></i><br />
+				<?php
+				} else {
+					// Expired
+				?>
+					<i class="fa fa-times-circle fa-2x" style="color: red"></i><br />
+				<?php
+				}
+				?>
+				
 			<span class="description"><?php _e("Please enter memberhsip number."); ?></span>
 		  </td>
 		</tr>
@@ -47,10 +212,10 @@ Author URI:
 		<table class="form-table">
 		<tr>
 		  <th>Expiry Date</th>
-		  <td><input 	type="month" 
+		  <td><input 	type="date" 
 						name="logans-club-membership-expiry-date"
 						id="logans-club-membership-expiry-date"
-						value="<?php echo esc_attr( get_the_author_meta( 'logans-club-membership-expiry-date', $user->ID ) ); ?>"
+						value="<?php _e($logans_membership_info[0]['logans-membership-expiry-date']) ?>"
 						/></td>
 		</tr>
 	  </table>
@@ -64,26 +229,18 @@ Author URI:
 		echo '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  rel="stylesheet">';
 	}
 	
-	// Add save Club Membership Number when admin presses update
-	add_action( 'edit_user_profile_update', 'save_logans_club_membership_number_user_profile_fields' );
-
-	function save_logans_club_membership_number_user_profile_fields( $user_id ) {
-	  $saved = false;
-	  if ( current_user_can( 'edit_user', $user_id ) ) {
-		update_user_meta( $user_id, 'logans-club-membership-number', $_POST['logans-club-membership-number'] );
-		$saved = true;
-	  }
-	  return true;
-	  }
+	// Add update function for Club Membership info (Arry with club number and expiry date)
+	add_action ('edit_user_profile_update','update_logans_club_member_info');
 	
-	// Add save Club Membership expiry date when admin presses update
-	add_action( 'edit_user_profile_update', 'save_logans_club_membership_expiry_date_user_profile_fields' );	
-	function save_logans_club_membership_expiry_date_user_profile_fields( $user_id ) {
-	  $saved = false;
-	  if ( current_user_can( 'edit_user', $user_id ) ) {
-		update_user_meta( $user_id, 'logans-club-membership-expiry-date', $_POST['logans-club-membership-expiry-date'] );
+	function update_logans_club_member_info($user_id){
+		$club_info = array(
+							'logans-membership-number' => $_POST['logans-club-membership-number'],
+							'logans-membership-expiry-date' => $_POST['logans-club-membership-expiry-date']);
+		$saved = false;
+		if ( current_user_can( 'edit_user', $user_id ) ) {
+			update_user_meta( $user_id, 'logans-club-membership-info', $club_info );
 		$saved = true;
 	  }
-	  return true;
+		return true;
 	  }
 ?>
