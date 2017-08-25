@@ -3,7 +3,7 @@
 Plugin Name: Logans Club Membership
 Plugin URL: 
 Description: Logan's Club Membership. This creates a custom user role 'Logans Club Member'; custom fields on the user admin screen and settings options for category discounts
-Version: 0.3
+Version: 0.8
 Author: Malcolm Walters
 Author URI:  
 */
@@ -68,20 +68,27 @@ function logans_information_endpoint_content() {
 			echo "It looks like you're not a member. Click here to read about the Logan's Club!";
 			return;
 		}
-		
 		$logans_membership_info = get_user_meta( $user_id, 'logans-club-membership-info', false);
-		
-		$expiry_date = $logans_membership_info[0]['logans-membership-expiry-date'];
+		$expiry_date = date('d-M-Y',strtotime($logans_membership_info[0]['logans-membership-expiry-date']));
 		?>
 		<p>
-		Your Logan's Membership Number is: <br /><input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-number']) ?>" size='3'>
+		Your Logan's Membership Number is: <input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-number']) ?>" size='3'>
 		</p>
 		<p>
-		Your membership is due for renewal on: <br /><input type="text" readonly="readonly" value="<?php _e($logans_membership_info[0]['logans-membership-expiry-date']) ?>" size='10'>
-		</p>
-		<p>
-		Your current membership status is: <i class="fa fa-times-circle fa-2x" style="color: red"></i><br /><br />
-		</p>
+		<?php 
+		if (is_logans_club_membership_expired($logans_membership_info[0]['logans-membership-expiry-date'])){
+			
+			echo "Your membership has <strong>Expired</strong>. <i class='fa fa-times-circle fa-2x' style='color: red'></i></p>
+					<p>Your membership expired on ";
+			echo $expiry_date;
+			echo "<p>Thank you for being part of the Logan's Patchwork Club. If you would like to renew your membership, please contact us and we'll be happy to help.</p>";
+		} else
+			{
+			echo "Your membership is <strong>Active</strong> <i class='fa fa-check fa-2x' style='color: green'></i></p>
+					<p>Your membership is due for renewal on ";
+			echo $expiry_date;
+		}
+		?>
 		<?php
 }
 
@@ -112,16 +119,12 @@ add_filter ( 'woocommerce_account_menu_items', 'logans_woo_my_account_order' );
 - Compares expiry date in user_meta_data to today's date. If membership has expired this should return false.
 */
 
-	function check_logans_club_membership_expiry($expiry_date){
-		echo $expiry_date;
-		/*
-		if ($expiry_date > $todays_date){
+	function is_logans_club_membership_expired($expiry_date){
+		$date = date('Y-m-d');
+		if ($expiry_date >=  $date){
 			return false;
 		}
 		return true;
-		
-	*/
-		echo "Here";
 	}
 
 	
@@ -159,7 +162,7 @@ This adds the fields to the my accounts section of the website when the user is 
 	add_action( 'edit_user_profile', 'logans_club_member_info_fields' );
 	
 // 	Load Font Awesome icons for use in displaying membership status
-	add_action('wp_head','load_font_awesome_icons');
+//	add_action('wp_head','load_font_awesome_icons');
 
 
 /* FOR ADMIN DASHBOARD - Adding fields to user profile as admin
@@ -170,15 +173,6 @@ This adds the fields for Logans club membership that is viewed throught eh admin
 		
 		$logans_membership_info = get_user_meta( $user->ID, 'logans-club-membership-info', false);
 		$expiry_date = $logans_membership_info[0]['logans-membership-expiry-date'];
-		$date_now = new DateTime();
-		check_logans_club_membership_expiry($expiry_date);
-		var_dump ($date_now->format('Y-m-d'));
-		var_dump (date('Y-m-d',strtotime($expiry_date)));
-		if (date('Y-m-d',strtotime($expiry_date)) > date('Y-m-d',(strtotime($date_now->format('Y-m-d'))))){
-			echo "Expired";
-		}else{
-			echo "Valid";
-		}
 	?>
 	  <h3><?php _e("Logan's Club Membership", "blank"); ?></h3>
 	  <table class="form-table">
@@ -189,20 +183,13 @@ This adds the fields for Logans club membership that is viewed throught eh admin
 				value="<?php _e($logans_membership_info[0]['logans-membership-number']); ?>" size = "5"/> 
 				<?php 
 				// Compare expiry date to today's date and assign correct icons
-				$date_now - new DateTime();
-				$logans_membership_expiry_date = new DateTime($logans_membership_info[0]['logans-membership-expiry-date']);
 				
-				if ($date_now > $logans_membership_expiry_date) {
-					//Current membership
-				?>
-					<i class="fa fa-check fa-2x" style="color: green"></i><br />
-				<?php
-				} else {
-					// Expired
-				?>
-					<i class="fa fa-times-circle fa-2x" style="color: red"></i><br />
-				<?php
-				}
+				if (is_logans_club_membership_expired($logans_membership_info[0]['logans-membership-expiry-date'])){
+						echo "Membership Status: <strong>Expired</strong>. <i class='fa fa-times-circle fa-2x' style='color: red'></i></p>";
+					} else
+				{
+						echo "Membership Status: <strong>Active</strong> <i class='fa fa-check fa-2x' style='color: green'></i></p>";
+					}
 				?>
 				
 			<span class="description"><?php _e("Please enter memberhsip number."); ?></span>
