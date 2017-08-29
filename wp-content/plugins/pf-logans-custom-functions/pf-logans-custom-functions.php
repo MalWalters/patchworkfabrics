@@ -47,7 +47,7 @@ function logans_custom_plugin_options(){
 	<form method="post">
 	<?php
 	if ($active_tab == "minimum-cut"){
-		 include('pf-logans-minimum-cut-notice.php');
+		 include('pf-logans-minimum-cut-notice-admin-form.php');
 		}else{
 			if (is_plugin_inactive("pf-logans-club-membership/pf-logans-club-membership.php")){
 				echo "<h3>To access these settings please, activate the Logans Club Membership plugin in the Plugins page</h3>";

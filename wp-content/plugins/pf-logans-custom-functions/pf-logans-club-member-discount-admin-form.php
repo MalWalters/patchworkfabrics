@@ -35,15 +35,33 @@
 			?>
 		
 		<form name="pf-logans-club-member-discount-admin-form" method="post" action="">
-			<p>Fabric by the metre: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Fabric" value="<?php echo $current_discount_array['Fabric']; ?>" style="text-align:right">%</p>
-			<p>Panels: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Panels" value="<?php echo $current_discount_array['Panels']; ?>" style="text-align:right">%</p>
-			<p>Fabric Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_FabricPacks" value="<?php echo $current_discount_array['FabricPacks']; ?>" style="text-align:right">%</p>
-			<p>Project Packs: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_ProjectPacks" value="<?php echo $current_discount_array['ProjectPacks']; ?>" style="text-align:right">%</p>
-			<p>Patterns: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Patterns" value="<?php echo $current_discount_array['Patterns']; ?>" style="text-align:right">%</p>
-			<p>Quilt Kits: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_QuiltKits" value="<?php echo $current_discount_array['QuiltKits']; ?>" style="text-align:right">%</p>
-			<p>Books: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Books" value="<?php echo $current_discount_array['Books']; ?>" style="text-align:right">%</p>
-			<p>Haberdashery: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Haberdashery" value="<?php echo $current_discount_array['Haberdashery']; ?>" style="text-align:right">%</p>
-			<p>Software: <input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Software" value="<?php echo $current_discount_array['Software']; ?>" style="text-align:right">%</p>
+			<table>
+				<tr>
+					<td>Fabric by the metre: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Fabric" value="<?php echo $current_discount_array['Fabric']; ?>" style="text-align:right">%</td>
+				</tr>
+				<tr>
+					<td>Panels: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Panels" value="<?php echo $current_discount_array['Panels']; ?>" style="text-align:right">%</td>
+				</tr>
+				<tr>
+					<td>Fabric Packs: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_FabricPacks" value="<?php echo $current_discount_array['FabricPacks']; ?>" style="text-align:right">%</td>
+				</tr>
+				<tr>
+					<td>Project Packs: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_ProjectPacks" value="<?php echo $current_discount_array['ProjectPacks']; ?>" style="text-align:right">%</td>
+				</tr>
+				<tr>
+					<td>Patterns: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Patterns" value="<?php echo $current_discount_array['Patterns']; ?>" style="text-align:right">%</td>
+				</tr>
+					<td>Quilt Kits: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_QuiltKits" value="<?php echo $current_discount_array['QuiltKits']; ?>" style="text-align:right">%</td>
+				</tr>
+				<tr>
+					<td>Books: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Books" value="<?php echo $current_discount_array['Books']; ?>" style="text-align:right">%</td>
+				</tr>
+				<tr>
+					<td>Haberdashery: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Haberdashery" value="<?php echo $current_discount_array['Haberdashery']; ?>" style="text-align:right">%</td>
+				</tr>
+					<td>Software: </td><td><input type="number" min="0" max="100" step="0.25" name="clubMemberDiscount_Software" value="<?php echo $current_discount_array['Software']; ?>" style="text-align:right">%</td>
+				</tr>
+			</table>
 		</form>
 			<p class="submit">
 			<input type="submit" name="Submit" value="Update" />
