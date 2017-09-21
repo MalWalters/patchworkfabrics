@@ -235,7 +235,60 @@ This adds the fields for Logans club membership that is viewed throught eh admin
 	  </table>
 	<?php
 	}
+	
+/****************************************************************************************************
+* Change price and add Logan's Club Membership pricing
+*/
 
+
+add_filter('woocommerce_get_price', 'custom_price_WPA111772', 10, 2);
+/**
+ * custom_price_WPA111772 
+ *
+ * filter the price based on category and user role
+ * @param  $price   
+ * @param  $product 
+ * @return 
+ */
+function custom_price_WPA111772($price, $product) {
+    if (!is_user_logged_in()) return $price;
+
+    //check if the product is in a category you want, let say shirts
+    if( has_term( 'shirts', 'product_cat' ,$product->ID) ) {
+        //check if the user has a role of dealer using a helper function, see bellow
+        if (has_role_WPA111772('dealer')){
+            //give user 10% of
+            $price = $price * 0.9;
+        }
+    }
+    return $price;
+}
+
+/**
+ * has_role_WPA111772 
+ *
+ * function to check if a user has a specific role
+ * 
+ * @param  string  $role    role to check against 
+ * @param  int  $user_id    user id
+ * @return boolean
+ */
+function has_role_WPA111772($role = '',$user_id = null){
+    if ( is_numeric( $user_id ) )
+        $user = get_user_by( 'id',$user_id );
+    else
+        $user = wp_get_current_user();
+
+    if ( empty( $user ) )
+        return false;
+
+    return in_array( $role, (array) $user->roles );
+}
+
+
+/****************************************************************************************************
+*/
+	
 	// Load Font Awesome icons for use in displaying membership status
 	add_action('admin_head','load_font_awesome_icons');
 	
@@ -247,16 +300,45 @@ This adds the fields for Logans club membership that is viewed throught eh admin
 	add_action ('edit_user_profile_update','update_logans_club_member_info');
 	
 	function update_logans_club_member_info($user_id){
-		// Check to see if PQ number is unique
-		
+		//Create Array
 		$club_info = array(
 							'logans-membership-number' => $_POST['logans-club-membership-number'],
 							'logans-membership-expiry-date' => $_POST['logans-club-membership-expiry-date']);
 		$saved = false;
+		$unique = false;
 		if ( current_user_can( 'edit_user', $user_id ) ) {
-			update_user_meta( $user_id, 'logans-club-membership-info', $club_info );
-		$saved = true;
+			update_user_meta( $user_id, 'logans-club-membership-info', $club_info, $unique );
+			$saved = true;
 	  }
 		return true;
 	  }
+	  
+	 add_filter ('woocommerce_get_price', 'show_logans_club_member_price', 10, 2);
+	 
+	function show_logans_club_member_price($price, $product) {
+		if (!is_user_logged_in()) {
+			 return $price;
+			}
+		 $user = wp_get_current_user();
+		 if ( in_array( 'logans_club_member', (array) $user->roles)) {
+			 $logansPrice = $price * .9;
+			 return $logansPrice;
+		}
+	}
+	 
+	add_filter ('woocommerce_get_price_html', 'show_logans_club_member_price_label');
+	
+	function show_logans_club_member_price_label ($price){
+		
+		if (!is_user_logged_in()) {
+			 return $price;
+			}
+		 $user = wp_get_current_user();
+		 if ( in_array( 'logans_club_member', (array) $user->roles)) {
+			 $return_string = "Logan's Club Member Price:\n<br>" . $price;
+			 return $return_string;
+		}
+		return $price;
+	}
+	  
 ?>
