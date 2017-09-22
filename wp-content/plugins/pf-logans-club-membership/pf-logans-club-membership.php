@@ -236,59 +236,6 @@ This adds the fields for Logans club membership that is viewed throught eh admin
 	<?php
 	}
 	
-/****************************************************************************************************
-* Change price and add Logan's Club Membership pricing
-*/
-
-
-add_filter('woocommerce_get_price', 'custom_price_WPA111772', 10, 2);
-/**
- * custom_price_WPA111772 
- *
- * filter the price based on category and user role
- * @param  $price   
- * @param  $product 
- * @return 
- */
-function custom_price_WPA111772($price, $product) {
-    if (!is_user_logged_in()) return $price;
-
-    //check if the product is in a category you want, let say shirts
-    if( has_term( 'shirts', 'product_cat' ,$product->ID) ) {
-        //check if the user has a role of dealer using a helper function, see bellow
-        if (has_role_WPA111772('dealer')){
-            //give user 10% of
-            $price = $price * 0.9;
-        }
-    }
-    return $price;
-}
-
-/**
- * has_role_WPA111772 
- *
- * function to check if a user has a specific role
- * 
- * @param  string  $role    role to check against 
- * @param  int  $user_id    user id
- * @return boolean
- */
-function has_role_WPA111772($role = '',$user_id = null){
-    if ( is_numeric( $user_id ) )
-        $user = get_user_by( 'id',$user_id );
-    else
-        $user = wp_get_current_user();
-
-    if ( empty( $user ) )
-        return false;
-
-    return in_array( $role, (array) $user->roles );
-}
-
-
-/****************************************************************************************************
-*/
-	
 	// Load Font Awesome icons for use in displaying membership status
 	add_action('admin_head','load_font_awesome_icons');
 	
@@ -312,20 +259,35 @@ function has_role_WPA111772($role = '',$user_id = null){
 	  }
 		return true;
 	  }
+
+/****************************************************************************************************
+* Change price and add Logan's Club Membership pricing
+*/
 	  
-	 add_filter ('woocommerce_get_price', 'show_logans_club_member_price', 10, 2);
+	add_filter ('woocommerce_get_price', 'calculate_logans_club_member_price', 10, 2);
 	 
-	function show_logans_club_member_price($price, $product) {
+	function calculate_logans_club_member_price($price, $product) {
 		if (!is_user_logged_in()) {
 			 return $price;
 			}
 		 $user = wp_get_current_user();
 		 if ( in_array( 'logans_club_member', (array) $user->roles)) {
-			 $logansPrice = $price * .9;
-			 return $logansPrice;
+			 // Get array for discounts
+			 $current_discount_array = get_option('pf-logans-club-member-discounts');
+			 // Find product category
+			 $product_category = get_the_terms( $product->ID, 'product_cat' );
+			 foreach ($product_category as $cat){
+				if($cat->parent==0){			 
+				// Find discout for that category
+				$category_discount = $current_discount_array[$cat->name];
+				}
+			 }
+			 $logans_club_member_price = $price * (100-(int)$category_discount)/100;
+			 return $logans_club_member_price;
 		}
 	}
-	 
+	
+	// Add text label before price if user is logged in and is a Logan's Club Member
 	add_filter ('woocommerce_get_price_html', 'show_logans_club_member_price_label');
 	
 	function show_logans_club_member_price_label ($price){

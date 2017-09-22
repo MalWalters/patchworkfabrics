@@ -30,7 +30,6 @@
 				} else {
 					// Normal page display
 					$current_discount_array = get_option('pf-logans-club-member-discounts');
-					
 				}
 			?>
 		
